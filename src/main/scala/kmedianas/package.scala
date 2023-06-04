@@ -31,18 +31,13 @@ package object kmedianas {
     puntoMasCercano
   }
 
-  /*
-  def clasificarPar(puntos: ParSeq[Punto], medianas: ParSeq[Punto]): ParMap[Punto, ParSeq[Punto]]= {
-    ...
-  }
-
-   */
-  /*
   def clasificarSeq(puntos: Seq[Punto], medianas: Seq[Punto]): Map[Punto, Seq[Punto]] = {
-    ...
-  }
+    puntos.groupBy(point => hallarPuntoMasCercano(point, medianas))
 
-   */
+  }
+  def clasificarPar(puntos: ParSeq[Punto], medianas: ParSeq[Punto]): ParMap[Punto, ParSeq[Punto]]= {
+    puntos.par.groupBy(point => hallarPuntoMasCercano(point,medianas))
+  }
 
   def calculePromedioPar(oldMean: Punto, points: ParSeq[Punto]): Punto = {
     if (points.isEmpty) oldMean
@@ -73,16 +68,19 @@ package object kmedianas {
       new Punto(x / points.length, y / points.length, z / points.length)
     }
   }
-  /*
-  def actualizarPar(clasif: ParMap[Punto, ParSeq[Punto]], medianasViejas: ParSeq[Punto]): ParSeq[Punto] = {
-    ...
-  }
-   */
+
   /*
   def actualizarSeq(clasif: Map[Punto, Seq[Punto]], medianasViejas: Seq[Punto]): Seq[Punto] = {
     ...
   }
    */
+
+  /*
+  def actualizarPar(clasif: ParMap[Punto, ParSeq[Punto]], medianasViejas: ParSeq[Punto]): ParSeq[Punto] = {
+    ...
+  }
+   */
+
   /*
   def hayConvergenciaPar(eta: Double, medianasViejas: ParSeq[Punto], medianasNuevas: ParSeq[Punto]): Boolean = {
     ...
