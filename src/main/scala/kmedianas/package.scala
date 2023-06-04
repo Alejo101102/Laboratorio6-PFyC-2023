@@ -14,6 +14,7 @@ package object kmedianas {
 
     override def toString = s"({round(x)},{round(y)},{round(z)})"
   }
+
   // Clasificar puntos
   def hallarPuntoMasCercano(p: Punto, medianas: IterableOnce[Punto]): Punto = {
     val it = medianas.iterator
@@ -31,12 +32,13 @@ package object kmedianas {
     puntoMasCercano
   }
 
-  def clasificarSeq(puntos: Seq[Punto], medianas: Seq[Punto]): Map[Punto, Seq[Punto]] = {
-    puntos.groupBy(point => hallarPuntoMasCercano(point, medianas))
-
-  }
   def clasificarPar(puntos: ParSeq[Punto], medianas: ParSeq[Punto]): ParMap[Punto, ParSeq[Punto]]= {
     puntos.par.groupBy(point => hallarPuntoMasCercano(point,medianas))
+  }
+
+  def clasificarSeq (puntos: Seq[Punto], medianas: Seq[Punto]): Map[Punto, Seq[Punto]] = {
+    puntos.groupBy(point => hallarPuntoMasCercano(point, medianas))
+
   }
 
   def calculePromedioPar(oldMean: Punto, points: ParSeq[Punto]): Punto = {
@@ -69,36 +71,49 @@ package object kmedianas {
     }
   }
 
+  def actualizarPar (clasif: ParMap[Punto, ParSeq[Punto]], medianasViejas: ParSeq[Punto]): ParSeq[Punto] = {
+    medianasViejas.map(medianasActuales => calculePromedioPar(medianasActuales, clasif(medianasActuales)))
+  }
+
   def actualizarSeq(clasif: Map[Punto, Seq[Punto]], medianasViejas: Seq[Punto]): Seq[Punto] = {
     medianasViejas.map(medianasActuales => calculePromedioSeq(medianasActuales,clasif(medianasActuales)))
   }
 
-  def actualizarPar(clasif: ParMap[Punto, ParSeq[Punto]], medianasViejas: ParSeq[Punto]): ParSeq[Punto] = {
-     medianasViejas.map(medianasActuales => calculePromedioPar(medianasActuales,clasif(medianasActuales)))
+  def hayConvergenciaPar (eta: Double, medianasViejas: ParSeq[Punto], medianasNuevas: ParSeq[Punto]): Boolean = {
+    val distancias = medianasViejas.zip(medianasNuevas).map { case (centroideViejo, centroideNuevo) =>
+      centroideViejo.distanciaAlCuadrado(centroideNuevo)
+    }
+    distancias.forall(_ < eta)
   }
 
-  /*
-  def hayConvergenciaPar(eta: Double, medianasViejas: ParSeq[Punto], medianasNuevas: ParSeq[Punto]): Boolean = {
-    ...
+  def hayConvergenciaSeq (eta: Double, medianasViejas: Seq[Punto], medianasNuevas: Seq[Punto]): Boolean = {
+    val distancias = medianasViejas.zip(medianasNuevas).map { case (centroideViejo, centroideNuevo) =>
+      centroideViejo.distanciaAlCuadrado(centroideNuevo)
+    }
+    distancias.forall(_ < eta)
   }
-   */
-  /*
-  def hayConvergenciaSeq(eta: Double, medianasViejas: Seq[Punto], medianasNuevas: Seq[Punto]): Boolean = {
-    ...
-  }
-  */
-  /*
+
   @tailrec
-  final def kMedianasPar(puntos: ParSeq[Punto], medianas: ParSeq[Punto], eta: Double): ParSeq[Punto] = {
-    ...
+  final def kMedianasPar (puntos: Seq[Punto], medianas: Seq[Punto], eta: Double): Seq[Punto] = {
+    val clasificacion = clasificarPar(puntos.par, medianas.par)
+    val nuevasMedianas = actualizarPar(clasificacion, medianas.par)
+
+    if (hayConvergenciaPar(eta, medianas.par, nuevasMedianas))
+      nuevasMedianas.seq
+    else
+      kMedianasPar(puntos, nuevasMedianas.seq, eta)
   }
-   */
-  /*
+
   @tailrec
-  final def kMedianasSeq(puntos: Seq[Punto], medianas: Seq[Punto], eta: Double): Seq[Punto] = {
-    ...
+  final def kMedianasSeq (puntos: Seq[Punto], medianas: Seq[Punto], eta: Double): Seq[Punto] = {
+    val clasificacion = clasificarSeq(puntos, medianas)
+    val nuevasMedianas = actualizarSeq(clasificacion, medianas)
+
+    if (hayConvergenciaSeq(eta, medianas, nuevasMedianas))
+      nuevasMedianas
+    else
+      kMedianasSeq(puntos, nuevasMedianas, eta)
   }
-   */
 
   def generarPuntosPar(k: Int, num: Int): ParSeq[Punto] = {
     val randx = new Random(1)
@@ -125,10 +140,12 @@ package object kmedianas {
         new Punto(x, y, z)
       }).to(mutable.ArrayBuffer)
   }
+
   def inicializarMedianasPar(k: Int, puntos: ParSeq[Punto]): ParSeq[Punto] = {
     val rand = new Random(7)
     (0 until k).map( _ => puntos(rand.nextInt(puntos.length))).to(mutable.ArrayBuffer).par
   }
+
   def inicializarMedianasSeq(k: Int, puntos: Seq[Punto]): Seq[Punto] = {
     val rand = new Random(7)
     (0 until k).map( _ => puntos(rand.nextInt(puntos.length))).to(mutable.ArrayBuffer)
