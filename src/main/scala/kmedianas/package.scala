@@ -69,17 +69,13 @@ package object kmedianas {
     }
   }
 
-  /*
   def actualizarSeq(clasif: Map[Punto, Seq[Punto]], medianasViejas: Seq[Punto]): Seq[Punto] = {
-    ...
+    medianasViejas.map(medianasActuales => calculePromedioSeq(medianasActuales,clasif(medianasActuales)))
   }
-   */
 
-  /*
   def actualizarPar(clasif: ParMap[Punto, ParSeq[Punto]], medianasViejas: ParSeq[Punto]): ParSeq[Punto] = {
-    ...
+     medianasViejas.map(medianasActuales => calculePromedioPar(medianasActuales,clasif(medianasActuales)))
   }
-   */
 
   /*
   def hayConvergenciaPar(eta: Double, medianasViejas: ParSeq[Punto], medianasNuevas: ParSeq[Punto]): Boolean = {
