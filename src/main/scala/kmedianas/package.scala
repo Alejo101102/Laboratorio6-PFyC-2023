@@ -94,14 +94,14 @@ package object kmedianas {
   }
 
   @tailrec
-  final def kMedianasPar (puntos: Seq[Punto], medianas: Seq[Punto], eta: Double): Seq[Punto] = {
-    val clasificacion = clasificarPar(puntos.par, medianas.par)
-    val nuevasMedianas = actualizarPar(clasificacion, medianas.par)
+  final def kMedianasPar(puntos: ParSeq[Punto], medianas: ParSeq[Punto], eta: Double): ParSeq[Punto] = {
+    val clasificacion = clasificarPar(puntos, medianas)
+    val nuevasMedianas = actualizarPar(clasificacion, medianas)
 
-    if (hayConvergenciaPar(eta, medianas.par, nuevasMedianas))
-      nuevasMedianas.seq
+    if (hayConvergenciaPar(eta, medianas, nuevasMedianas))
+      nuevasMedianas
     else
-      kMedianasPar(puntos, nuevasMedianas.seq, eta)
+      kMedianasPar(puntos, nuevasMedianas, eta)
   }
 
   @tailrec
