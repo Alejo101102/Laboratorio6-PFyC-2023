@@ -11,8 +11,8 @@ val standardConfig = config(
 // Vamos a crear las pruebas con las variaciones automatizadas de una vez
 
 // Variaciones
-val variacionesNumPuntos = Seq(100, 1000, 10000, 1000000) // Seq(100, 1000, 10000, 1000000)
-val variacionesK = Seq(2, 4, 8, 16, 32) // Seq(2, 4, 8, 16, 32, 64)
+val variacionesNumPuntos = Seq(500) // Seq(100, 1000, 10000, 1000000)
+val variacionesK = Seq(64) // Seq(2, 4, 8, 16, 32, 64)
 val variacionesEta = Seq(0.01, 0.001)
 
 // Iterador de variaciones

@@ -1,6 +1,6 @@
 import kmedianas._
 import org.scalameter._
-import plotly._, element._, layout._, Plotly._
+import plotly.element._, plotly.layout._, plotly._
 import scala.collection.parallel.CollectionConverters._
 
 def tiempoDe [T] ( body : => T) = {
@@ -13,24 +13,24 @@ def tiempoDe [T] ( body : => T) = {
 }
 def probarKmedianas ( numPuntos : Int , eta : Double , k : Int ) = {
   // Probar lo secuencial
-  val puntosSeq = generarPuntosSeq( k , numPuntos )
-  val medianasSeq = inicializarMedianasSeq ( k , puntosSeq )
-  val medianasSeqfin = kMedianasSeq ( puntosSeq , medianasSeq , eta )
-  val clasifFinalSeq = clasificarSeq ( puntosSeq , medianasSeqfin )
-  val tiempoSeq = tiempoDe( kMedianasSeq ( puntosSeq , medianasSeq , eta))
+  val puntosSeq = generarPuntosSeq(k, numPuntos)
+  val medianasSeq = inicializarMedianasSeq(k, puntosSeq)
+  val medianasSeqfin = kMedianasSeq(puntosSeq, medianasSeq, eta)
+  val clasifFinalSeq = clasificarSeq(puntosSeq, medianasSeqfin)
+  val tiempoSeq = tiempoDe(kMedianasSeq(puntosSeq, medianasSeq, eta))
   // Hacer grafica de los resultados del proceso secuencial
   val trazosSeq = for {
-    (p , pseq ) <- clasifFinalSeq
+    (p, pseq) <- clasifFinalSeq
     ejeXseq = for {
       pto <- pseq
     } yield pto.x
     ejeYseq = for {
       pto <- pseq
     } yield pto.y
-  } yield Scatter (
-      ejeXseq,
-      ejeYseq
-    ).withMode(ScatterMode(ScatterMode.Markers)).withName(s"Puntos: p.x" ++ s"p.y")
+  } yield Scatter(
+    ejeXseq,
+    ejeYseq
+  ).withMode(ScatterMode(ScatterMode.Markers)).withName(s"Puntos: p.x" ++ s"p.y")
 
   val ejeXMedianasSeq = for {
     p <- medianasSeq
@@ -62,7 +62,7 @@ def probarKmedianas ( numPuntos : Int , eta : Double , k : Int ) = {
 
   val layoutSeq = Layout().withTitle("Plotting de puntos al azar y medianas iniciales y finales − Secuencial")
 
-  Plotly.plot("kmedianasSeq.html", dataSeq, layoutSeq)
+  Plotly.plot("C:\\Users\\Asus\\Documents\\kMedianasSeq.html", dataSeq, layoutSeq)
   // Probarlo paralelo
 
   // val puntosPar = generarPuntosPar ( k , numPuntos )
@@ -76,7 +76,7 @@ def probarKmedianas ( numPuntos : Int , eta : Double , k : Int ) = {
   // Hacer grafica de los resultados del proceso paralelo
   val trazosPar = for {
     (p, ppar) <- clasifFinalPar
-      ejeXpar = for {
+    ejeXpar = for {
       pto <- ppar.seq
     } yield pto.x
     ejeYpar = for {
@@ -84,7 +84,7 @@ def probarKmedianas ( numPuntos : Int , eta : Double , k : Int ) = {
     } yield pto.y
   } yield Scatter(
     ejeXpar.toSeq,
-    ejeYpar.toSeq).withMode(ScatterMode(ScatterMode.Markers)).withName(s"Puntos: p.x"++ s"p.y")
+    ejeYpar.toSeq).withMode(ScatterMode(ScatterMode.Markers)).withName(s"Puntos: p.x" ++ s"p.y")
 
   val ejeXMedianasPar = for {
     p <- medianasPar
@@ -114,7 +114,7 @@ def probarKmedianas ( numPuntos : Int , eta : Double , k : Int ) = {
 
   val dataPar = (trazo2Par +: (trazo3Par +: trazosPar.toSeq)).seq
   val layoutPar = Layout().withTitle("Plotting de puntos al azar y medianas iniciales y finales − Paralela")
-  Plotly.plot("kmedianasPar.html", dataPar.toSeq, layoutPar)
+  Plotly.plot("C:\\Users\\Asus\\Documents\\kMedianasPar.html", dataPar.toSeq, layoutPar)
   (tiempoSeq, tiempoPar, tiempoSeq.value / tiempoPar.value)
 
 }

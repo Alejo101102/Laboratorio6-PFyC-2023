@@ -8,7 +8,7 @@ val standardConfig = config (
   Key.verbose := false
 ) withWarmer (Warmer.Default ( ) )
 
-val numPuntos = 500000
+val numPuntos = 500
 val eta = 0.01
 val k = 32
 val puntosSeq = generarPuntosSeq ( k , numPuntos )
@@ -16,6 +16,7 @@ val medianasSeq = inicializarMedianasSeq ( k , puntosSeq )
 val puntosPar = generarPuntosPar ( k , numPuntos )
 val medianasPar = inicializarMedianasPar ( k , puntosPar )
 println ( "hola" )
+
 val tiempoSeq = standardConfig measure {
   kMedianasSeq (puntosSeq , medianasSeq , eta)
 }
