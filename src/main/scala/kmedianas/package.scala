@@ -12,7 +12,7 @@ package object kmedianas {
       cuadrado(that.x - x) + cuadrado(that.y - y) + cuadrado(that.z - z)
     private def round(v: Double): Double = (v * 100).toInt/100.0
 
-    override def toString = s"({round(x)},{round(y)},{round(z)})"
+    override def toString = s"(${round(x)}, ${round(y)}, ${round(z)})"
   }
 
   // Clasificar puntos
@@ -163,5 +163,3 @@ package object kmedianas {
     (0 until k).map( _ => puntos(rand.nextInt(puntos.length))).to(mutable.ArrayBuffer)
   }
 }
-
-

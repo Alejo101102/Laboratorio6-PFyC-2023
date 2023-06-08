@@ -114,7 +114,12 @@ def probarKmedianas ( numPuntos : Int , eta : Double , k : Int ) = {
 
   val dataPar = (trazo2Par +: (trazo3Par +: trazosPar.toSeq)).seq
   val layoutPar = Layout().withTitle("Plotting de puntos al azar y medianas iniciales y finales − Paralela")
-  Plotly.plot("C:\\Users\\Asus\\Documents\\kMedianasPar.html", dataPar.toSeq, layoutPar)
+  //Plotly.plot("C:\\Users\\Asus\\Documents\\kMedianasPar.html", dataPar.toSeq, layoutPar)
   (tiempoSeq, tiempoPar, tiempoSeq.value / tiempoPar.value)
 
 }
+//probarKmedianas(8,0.01,2)
+//probarKmedianas(10,0.01,2)
+//probarKmedianas(12,0.01,4)
+//probarKmedianas(16,0.01,4)
+probarKmedianas(12,0.01,6)
